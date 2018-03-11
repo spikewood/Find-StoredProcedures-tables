@@ -2,12 +2,39 @@ import re
 import pprint
 
 def cleanComments(s):
-    '''Single line comments are devnoted by "--"
-        cleanComments will remove these comments without removing the entire line.'''
+    '''Removes common comments from sql files
+        In the case of single line comments, the new line is not removed.'''
+    s = cleanMulitLineComments(s)
+    s = cleanSingleLineComments(s)
+    return s
+
+def cleanMulitLineComments(s):
+    '''Multi line comments are denoted by "/* ... */"
+        this function will remove these comments including newlines.'''
+    singleLineComment = re.compile(r'.*?(/\*.*?\*/).*', re.DOTALL)
+    match = singleLineComment.search(s)
+    while match:
+        s = s.replace(match.group(1), '')
+        match = singleLineComment.search(s)
+    return s
+
+def cleanSingleLineComments(s):
+    '''Single line comments are denoted by "--"
+        this function will remove these comments without removing the entire line.'''
     singleLineComment = re.compile(r'.*?(--[^\n]*).*', re.DOTALL)
     match = singleLineComment.search(s)
     while match:
-        s = s.replace(match.group(1),'')
+        s = s.replace(match.group(1), '')
+        match = singleLineComment.search(s)
+    return s
+
+def redactString(s):
+    '''redacts string denoted by starting with a " or ' and ending with the same.
+        this function will change the strings to 'REDACTED'.'''
+    singleLineComment = re.compile(r'.*?((\"|\').*?\2).*', re.DOTALL)
+    match = singleLineComment.search(s)
+    while match:
+        s = s.replace(match.group(1), '>REDACTED<')
         match = singleLineComment.search(s)
     return s
 
