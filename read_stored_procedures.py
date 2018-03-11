@@ -38,6 +38,22 @@ def redactString(s):
         match = singleLineComment.search(s)
     return s
 
+def removeExcessWhitespace(s):
+    '''removes excess whitespace front and back on the string
+        also removes internal extra whitespace'''
+    s = s.strip() #remove front and back whitespace
+    lines = s.split('\n')
+    cleanlines = []
+    for line in lines: #remove excess whitespace in between words
+        if line:
+            words = line.split()
+            line = ' '.join(words)
+            cleanlines.append(line)
+    cleanlines = filter(None, cleanlines)
+    return '\n'.join(cleanlines)
+
+
+
 def old():
 
     file1 = open(

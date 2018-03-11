@@ -71,21 +71,21 @@ class TestCleanCommentMethods(unittest.TestCase):
 class TestRedactStringMethods(unittest.TestCase):
 
     def test_RedactStringFromSingleLine(self):
-        # test that string can be normalized
+        # test that string can be normalized in single line strings
         input = 'this "needs a string" --this is a comment'
         expectedResult = 'this >REDACTED< --this is a comment'
         teststring = rsp.redactString(input)
         self.assertEqual(teststring,expectedResult)
 
     def test_RedactStringFromMultiLine(self):
-        # test that string can be normalized
+        # test that strings can be normalized in multiline strings
         input = 'this "needs a multi-line\n string" --this is a comment'
         expectedResult = 'this >REDACTED< --this is a comment'
         teststring = rsp.redactString(input)
         self.assertEqual(teststring,expectedResult)
 
     def test_RedactMulitpleStringsFromMultiLine(self):
-        # test that string can be normalized amongst chaos
+        # test that strings can be normalized amongst chaos
         input = '''this "needs a multi-line
         string" 
         --this is a comment
@@ -101,6 +101,29 @@ class TestRedactStringMethods(unittest.TestCase):
         feel me?'''
         teststring = rsp.redactString(input)
         self.assertEqual(teststring, expectedResult)
+
+class TestRemoveExcessWhitespaceMethods(unittest.TestCase):
+
+    def test_trimWhitespaceFrontAndBack(self):
+        # test that strings can be normalized
+        input = '   this "needs a string" --this is a comment   '
+        expectedResult = 'this "needs a string" --this is a comment'
+        teststring = rsp.removeExcessWhitespace(input)
+        self.assertEqual(teststring,expectedResult)
+
+    def test_trimWhitespaceInside(self):
+        # test that strings can be normalized
+        input = '   this  "needs a string" \t  \r\n--this is a comment   '
+        expectedResult = 'this "needs a string"\n--this is a comment'
+        teststring = rsp.removeExcessWhitespace(input)
+        self.assertEqual(teststring,expectedResult)
+
+    def test_trimMultipleNewLines(self):
+        # test that strings can be normalized
+        input = '\n   this  "needs\n\n\n\n a string" \t  \r\n\n--this is a comment   \n'
+        expectedResult = 'this "needs\na string"\n--this is a comment'
+        teststring = rsp.removeExcessWhitespace(input)
+        self.assertEqual(teststring,expectedResult)
 
 
 if __name__ == '__main__':
