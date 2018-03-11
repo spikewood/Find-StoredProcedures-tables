@@ -79,7 +79,7 @@ class TestRedactStringMethods(unittest.TestCase):
 
     def test_RedactStringFromMultiLine(self):
         # test that strings can be normalized in multiline strings
-        input = 'this "needs a multi-line\n string" --this is a comment'
+        input = 'this \'\'needs a multi-line\n string\'\' --this is a comment'
         expectedResult = 'this >REDACTED< --this is a comment'
         teststring = rsp.redactString(input)
         self.assertEqual(teststring,expectedResult)
@@ -89,9 +89,9 @@ class TestRedactStringMethods(unittest.TestCase):
         input = '''this "needs a multi-line
         string" 
         --this is a comment
-        boom = 'this is another string' + 'another one'
-        and more "commnet 'stuff' to follow"
-        and 'this "one" too?'
+        boom = ''this is another string'' + \'\'\'another one\'\'\'
+        and more \'\'\'commnet 'stuff' to follow\'\'\'
+        and ''this 'one' too?''
         feel me?'''
         expectedResult = '''this >REDACTED< 
         --this is a comment
@@ -125,6 +125,18 @@ class TestRemoveExcessWhitespaceMethods(unittest.TestCase):
         teststring = rsp.removeExcessWhitespace(input)
         self.assertEqual(teststring,expectedResult)
 
+class TestCleanTestFile(unittest.TestCase):
+
+    def test_cleanTestFile(self):
+        # test that strings can be normalized
+        testFile = open("CleanTestFile.sql")
+        input = testFile.read()
+        testFile.close()
+        resultFile = open("CleanResultFile.sql")
+        expectedResult = resultFile.read()
+        resultFile.close()
+        teststring = rsp.cleanFile(input)
+        self.assertEqual(teststring,expectedResult)
 
 if __name__ == '__main__':
     unittest.main()

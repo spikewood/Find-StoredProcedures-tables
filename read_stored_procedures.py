@@ -1,6 +1,12 @@
 import re
 import pprint
 
+def cleanFile(s):
+    '''Cleans a file's contents of comments and whitespace.'''
+    s = cleanComments(s)
+    s = removeExcessWhitespace(s)
+    return s
+
 def cleanComments(s):
     '''Removes common comments from sql files
         In the case of single line comments, the new line is not removed.'''
@@ -31,7 +37,7 @@ def cleanSingleLineComments(s):
 def redactString(s):
     '''redacts string denoted by starting with a " or ' and ending with the same.
         this function will change the strings to 'REDACTED'.'''
-    singleLineComment = re.compile(r'.*?((\"|\').*?\2).*', re.DOTALL)
+    singleLineComment = re.compile(r'.*?(((\'\'\'?)|").*?\2).*', re.DOTALL)
     match = singleLineComment.search(s)
     while match:
         s = s.replace(match.group(1), '>REDACTED<')
@@ -52,6 +58,10 @@ def removeExcessWhitespace(s):
     cleanlines = filter(None, cleanlines)
     return '\n'.join(cleanlines)
 
+testFile = open("CleanTestFile.sql")
+input = testFile.read()
+testFile.close()
+teststring = cleanFile(input)
 
 
 def old():
